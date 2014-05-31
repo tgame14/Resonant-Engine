@@ -160,7 +160,7 @@ public class ContentRegistry
                             block.setTextureName(modPrefix + name);
                     }
 
-                    if (defaultTab != null)
+                    if (defaultTab != null  && block.getCreativeTabToDisplayOn() == null)
                         block.setCreativeTab(defaultTab);
 
                     blocks.put(block, name);
@@ -259,7 +259,7 @@ public class ContentRegistry
                             item.setTextureName(modPrefix + name);
                     }
 
-                    if (defaultTab != null)
+                    if (defaultTab != null && item.getCreativeTab() == null)
                         item.setCreativeTab(defaultTab);
 
                     items.put(item, name);
