@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
+import resonant.lib.References;
 import resonant.lib.utility.ReflectionUtility;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
@@ -27,10 +28,10 @@ public class SaveManager
     private HashMap<Class<?>, String> classToIDMap = new HashMap<Class<?>, String>();
 
     /** List of object to save on the next save call */
-    private LinkedHashSet<IVirtualObject> saveList = new LinkedHashSet<IVirtualObject>();
+    private LinkedHashSet<IVirtualObject> nextSaveList = new LinkedHashSet<IVirtualObject>();
 
     /** Object that save each time the world saves */
-    private LinkedHashSet<IVirtualObject> objects = new LinkedHashSet<IVirtualObject>();
+    private LinkedHashSet<IVirtualObject> saveList = new LinkedHashSet<IVirtualObject>();
 
     /** Instance of this class */
     private static SaveManager instance;
@@ -54,9 +55,9 @@ public class SaveManager
     {
         synchronized (instance())
         {
-            if (object instanceof IVirtualObject && !instance().saveList.contains(object))
+            if (object instanceof IVirtualObject && !instance().nextSaveList.contains(object))
             {
-                instance().saveList.add((IVirtualObject) object);
+                instance().nextSaveList.add((IVirtualObject) object);
             }
         }
     }
@@ -66,9 +67,9 @@ public class SaveManager
     {
         synchronized (instance())
         {
-            if (object instanceof IVirtualObject && !instance().objects.contains(object))
+            if (object instanceof IVirtualObject && !instance().saveList.contains(object))
             {
-                instance().saveList.add((IVirtualObject) object);
+                instance().nextSaveList.add((IVirtualObject) object);
             }
         }
     }
@@ -87,9 +88,9 @@ public class SaveManager
             {
                 if (instance().idToClassMap.containsKey(id) && instance().idToClassMap.get(id) != null)
                 {
-                    System.out.println("[CoreMachine]SaveManager: Something attempted to register a class with the id of another class");
-                    System.out.println("[CoreMachine]SaveManager: Id:" + id + "  Class:" + clazz.getName());
-                    System.out.println("[CoreMachine]SaveManager: OtherClass:" + instance().idToClassMap.get(id).getName());
+                    System.out.println("[" + References.NAME + "]SaveManager: Something attempted to register a class with the id of another class");
+                    System.out.println("[" + References.NAME + "]SaveManager: Id:" + id + "  Class:" + clazz.getName());
+                    System.out.println("[" + References.NAME + "]SaveManager: OtherClass:" + instance().idToClassMap.get(id).getName());
                 }
                 else
                 {
@@ -162,13 +163,13 @@ public class SaveManager
                     }
                     catch (Exception e)
                     {
-                        FMLLog.log(Level.SEVERE, e, "[CalclaviaCore]SaveManager: An object %s(%s) has thrown an exception during loading, its state cannot be restored. Report this to the mod author", nbt.getString("id"), obj.getClass().getName());
+                        FMLLog.log(Level.SEVERE, e, "[" + References.NAME + "] SaveManager: An object %s(%s) has thrown an exception during loading, its state cannot be restored. Report this to the mod author", nbt.getString("id"), obj.getClass().getName());
                         obj = null;
                     }
                 }
                 else
                 {
-                    MinecraftServer.getServer().getLogAgent().logWarning("[CalclaviaCore]SaveManager: Skipping object with id " + nbt.getString("id"));
+                    MinecraftServer.getServer().getLogAgent().logWarning("[" + References.NAME + "]SaveManager: Skipping object with id " + nbt.getString("id"));
                 }
 
                 return obj;
@@ -176,7 +177,7 @@ public class SaveManager
         }
         catch (Exception e)
         {
-            FMLLog.fine("[Resonant Engine]SaveManager: Error trying to load object from save");
+            FMLLog.fine("[" + References.NAME + "]SaveManager: Error trying to load object from save");
             e.printStackTrace();
         }
         return null;
@@ -196,15 +197,15 @@ public class SaveManager
     /** Called to save all object currently set to save next call */
     public static void saveAll()
     {
-        for (IVirtualObject ref : instance().objects)
-        {
-            saveObject(ref);
-        }
         for (IVirtualObject ref : instance().saveList)
         {
             saveObject(ref);
         }
-        instance().saveList.clear();
+        for (IVirtualObject ref : instance().nextSaveList)
+        {
+            saveObject(ref);
+        }
+        instance().nextSaveList.clear();
     }
 
     /** Saves an object to its preferred save location. Does check for null, registered save class,
@@ -237,23 +238,23 @@ public class SaveManager
                         }
                         else
                         {
-                            throw new NullPointerException("SaveManager: Object save file path is null");
+                            throw new NullPointerException("[" + References.NAME + "]SaveManager: Object save file path is null");
                         }
                     }
                     else
                     {
-                        throw new Exception("SaveManager: Object does not have a save ID");
+                        throw new Exception("[" + References.NAME + "]SaveManager: Object does not have a save ID");
                     }
                 }
                 else
                 {
-                    throw new NullPointerException("SaveManager: Attempted to save a null object");
+                    throw new NullPointerException("[" + References.NAME + "]SaveManager: Attempted to save a null object");
                 }
             }
         }
         catch (Exception e)
         {
-            FMLLog.fine("[Resonant Engine]SaveManager: Error trying to save object class: " + (object != null ? object.getClass() : "null"));
+            FMLLog.fine("[" + References.NAME + "]SaveManager: Error trying to save object class: " + (object != null ? object.getClass() : "null"));
             e.printStackTrace();
         }
     }
