@@ -127,16 +127,24 @@ public class SaveManager
     public static Object createAndLoad(NBTTagCompound nbt, Object... args)
     {
         Object obj = null;
+        Class<?> clazz = null;
         try
         {
-            if (nbt != null && nbt.hasKey("id"))
+            if (nbt != null)
             {
                 try
-                {
-                    Class<?> clazz = getClass(nbt.getString("id"));
+                {                    
+                    if (nbt.hasKey("id"))
+                    {
+                        clazz = getClass(nbt.getString("id"));
+                    }
+                    else
+                    {
+                        clazz = getClass(nbt.getString("saveManagerID"));
+                    }
                     if (clazz != null)
                     {
-                        if (args == null || args.length == 0)
+                        if (args != null && args.length > 0)
                         {
                             Constructor<?> con = ReflectionUtility.getConstructorWithArgs(clazz, args);
                             if (con != null)
@@ -231,7 +239,7 @@ public class SaveManager
                             /* Create nbt save object */
                             NBTTagCompound tag = new NBTTagCompound();
                             object.save(tag);
-                            tag.setString("id", getID(object.getClass()));
+                            tag.setString("saveManagerID", getID(object.getClass()));
 
                             /* Save data using NBTUtility */
                             NBTUtility.saveData(file, tag);
