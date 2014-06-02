@@ -7,7 +7,7 @@ Mod development engine used by the Universal Electricity Team to develop minecra
 * <a href="http://www.patreon.com/Alex_hawks"> Alex_hawks </a>
 * <a href="http://www.patreon.com/calclavia"> Calclavia </a>
 * <a href="http://www.patreon.com/darkcow"> Darkguardsman </a>
-* Maxwolf Goodliffe
+* <a href="http://www.patreon.com/maxwolf"> Maxwolf Goodliffe </a>
 * Tgame14
 
 ### Credits
