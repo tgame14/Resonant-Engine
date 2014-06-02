@@ -1,6 +1,6 @@
 Resonant Engine
 ======
-Mod framework and source dev kit used mainly by Calclavia's mods.
+Mod development engine used by the Universal Electricity Team to develop minecraft mods. 
 
 
 ### Developer
