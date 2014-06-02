@@ -4,7 +4,7 @@ Mod framework and source dev kit used mainly by Calclavia's mods.
 
 
 ### Developer
-* Calclavia
+* Calclavia http://www.patreon.com/calclavia
 * Darkguardsman(aka DarkCow)
 * Alex_hawks
 * Maxwolf Goodliffe
