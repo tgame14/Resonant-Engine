@@ -4,13 +4,18 @@ Mod framework and source dev kit used mainly by Calclavia's mods.
 
 
 ### Developer
-* Calclavia http://www.patreon.com/calclavia
-* Darkguardsman(aka DarkCow)
-* Alex_hawks
+* <a href="http://www.patreon.com/Alex_hawks"> Alex_hawks </a>
+* <a href="http://www.patreon.com/calclavia"> Calclavia </a>
+* <a href="http://www.patreon.com/darkcow"> Darkguardsman </a>
 * Maxwolf Goodliffe
+* Tgame14
+
+### Credits
+* Cazzar
+* Dmodoomsirius
+* Adaptivity
+
 
 
 ### License
-License
-
-Resonant Engine is licensed under Calclavia's Educational Public License (http://calclavia.com/educational-public-license/). By using or interacting with this software in any way shape or form, you agree to the license of this software.
+Resonant Engine is licensed under <a href="http://calclavia.com/educational-public-license"> Calclavia's Educational Public License </a>. By using or interacting with this software in any way shape or form, you agree to the license of this software.
