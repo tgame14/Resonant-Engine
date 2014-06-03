@@ -28,12 +28,12 @@ public class ContentRegistry
     @SidedProxy(clientSide = "resonant.lib.content.ClientRegistryProxy", serverSide = "resonant.lib.content.CommonRegistryProxy")
     public static CommonRegistryProxy proxy;
 
-    private final Configuration config;
-    private final String modID;
-    private IDManager idManager;
+    final Configuration config;
+    final String modID;
+    IDManager idManager;
 
-    private String modPrefix;
-    private CreativeTabs defaultTab;
+    String modPrefix;
+    CreativeTabs defaultTab;
 
     /** Custom unique packet IDs for the mod to use. */
     private int packetID = 0;
@@ -53,7 +53,7 @@ public class ContentRegistry
 
     public ContentRegistry setTab(CreativeTabs defaultTab)
     {
-        this.defaultTab = defaultTab;
+        this.setDefaultTab(defaultTab);
         return this;
     }
 
@@ -76,11 +76,11 @@ public class ContentRegistry
                 int assignedID = idManager.getNextBlockID();
                 int actualID = config.getBlock(name, assignedID).getInt(assignedID);
 
-                BlockDummy block = new BlockDummy(actualID, modPrefix, defaultTab, tileBlock);
+                BlockDummy block = new BlockDummy(actualID, modPrefix, getDefaultTab(), tileBlock);
                 tileBlock.block = block;
 
                 blocks.put(block, name);
-                proxy.registerBlock(block, tileBlock.itemBlock, name, modID);
+                proxy.registerBlock(this, block, tileBlock.itemBlock, name, modID);
 
                 tileBlock.onInstantiate();
 
@@ -155,16 +155,10 @@ public class ContentRegistry
                     if (modPrefix != null)
                     {
                         block.setUnlocalizedName(modPrefix + name);
-
-                        if (ReflectionHelper.getPrivateValue(Block.class, block, "textureName", "field_111026_f") == null)
-                            block.setTextureName(modPrefix + name);
-                    }
-
-                    if (defaultTab != null  && block.getCreativeTabToDisplayOn() == null)
-                        block.setCreativeTab(defaultTab);
+                    }                   
 
                     blocks.put(block, name);
-                    proxy.registerBlock(block, itemClass, name, modID);
+                    proxy.registerBlock(this, block, itemClass, name, modID);
                     finishCreation(block, tileClass);
                 }
             }
@@ -254,16 +248,10 @@ public class ContentRegistry
                     if (modPrefix != null)
                     {
                         item.setUnlocalizedName(modPrefix + name);
-
-                        if (ReflectionHelper.getPrivateValue(Item.class, item, "iconString", "field_111218_cA") == null)
-                            item.setTextureName(modPrefix + name);
-                    }
-
-                    if (defaultTab != null && item.getCreativeTab() == null)
-                        item.setCreativeTab(defaultTab);
+                    }                   
 
                     items.put(item, name);
-                    GameRegistry.registerItem(item, name, modID);
+                    proxy.registerItem(this, item, name, modID);
                 }
             }
             catch (Exception e)
@@ -273,5 +261,15 @@ public class ContentRegistry
             }
         }
         return item;
+    }
+
+    public CreativeTabs getDefaultTab()
+    {
+        return defaultTab;
+    }
+
+    public void setDefaultTab(CreativeTabs defaultTab)
+    {
+        this.defaultTab = defaultTab;
     }
 }
