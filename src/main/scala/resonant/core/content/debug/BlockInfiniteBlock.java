@@ -18,13 +18,14 @@ import universalelectricity.api.UniversalElectricity;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@BlockInfo(tileEntity = { "resonant.core.content.debug.TileInfiniteEnergy", "resonant.core.content.debug.TileInfiniteFluid" })
+@BlockInfo(tileEntity = { "resonant.core.content.debug.TileInfiniteEnergy", "resonant.core.content.debug.TileInfiniteFluid", "resonant.core.content.debug.TileInfiniteItem" })
 public class BlockInfiniteBlock extends BlockSidedIO
 {
     private static enum Types
     {
         ENERGY("infiniteEnergy", TileInfiniteEnergy.class),
-        FLUID("infiniteFluid", TileInfiniteFluid.class);
+        FLUID("infiniteFluid", TileInfiniteFluid.class),
+        ITEM("infiniteItem", TileInfiniteItem.class);
 
         public Icon icon;
         public String name;
