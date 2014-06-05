@@ -3,7 +3,6 @@ package resonant.api.event;
 import java.util.ArrayList;
 import java.util.List;
 
-import codechicken.multipart.TileMultipart;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -226,7 +225,9 @@ public class LaserEvent extends Event
             //Tile black list
             if(tile != null)
             {
-                if(tile instanceof TileMultipart)
+                Class<?> clazz = tile.getClass();
+                System.out.println("Clazz: " + clazz);
+                if(clazz.getName().contains("TileMultipart"))
                 {
                     if(player instanceof EntityPlayer)
                         ((EntityPlayer)player).addChatMessage("Laser: Breaking of multiparts is disabled for the moment");
