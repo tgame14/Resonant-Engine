@@ -80,14 +80,11 @@ public abstract class Node<P extends INodeProvider, G extends Grid, N> implement
     {
         try
         {
-            synchronized (connections)
-            {
-                doRecache();
-            }
+            doRecache();
         }
         catch (Exception e)
         {
-            System.out.println();
+            System.out.println("Node: " + this + " failed to rebuild its connection list and/or cache of values");
             e.printStackTrace();
         }
     }
