@@ -78,9 +78,17 @@ public abstract class Node<P extends INodeProvider, G extends Grid, N> implement
     @Override
     public final void recache()
     {
-        synchronized (connections)
+        try
         {
-            doRecache();
+            synchronized (connections)
+            {
+                doRecache();
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println();
+            e.printStackTrace();
         }
     }
 
