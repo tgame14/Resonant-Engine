@@ -16,7 +16,7 @@ public class AccessUser extends User implements ISaveObj
     protected boolean isTempary = false;
     protected NBTTagCompound extraData;
     protected AccessGroup group;
-    protected List<String> nodes = new ArrayList<String>();
+    private List<String> nodes = new ArrayList<String>();
 
     public AccessUser(String username)
     {
@@ -56,7 +56,7 @@ public class AccessUser extends User implements ISaveObj
                 for (int i = 0; i < sub_nodes.length; i++)
                 {
                     newNode += (i != 0 ? "." : "") + sub_nodes[i];
-                    if (nodes.contains(newNode + ".*") || group != null && group.hasNode(newNode + ".*") || nodes.contains(newNode) || group != null && group.hasNode(newNode))
+                    if (getNodes().contains(newNode + ".*") || group != null && group.hasNode(newNode + ".*") || getNodes().contains(newNode) || group != null && group.hasNode(newNode))
                     {
                         return true;
                     }
@@ -72,7 +72,7 @@ public class AccessUser extends User implements ISaveObj
         nbt.setString("username", this.username);
         nbt.setCompoundTag("extraData", this.userData());
         NBTTagList usersTag = new NBTTagList();
-        for (String str : this.nodes)
+        for (String str : this.getNodes())
         {
             NBTTagCompound accessData = new NBTTagCompound();
             accessData.setString("name", str);
@@ -87,10 +87,10 @@ public class AccessUser extends User implements ISaveObj
         this.username = nbt.getString("username");
         this.extraData = nbt.getCompoundTag("extraData");
         NBTTagList userList = nbt.getTagList("nodes");
-        this.nodes.clear();
+        this.getNodes().clear();
         for (int i = 0; i < userList.tagCount(); ++i)
         {
-            this.nodes.add(((NBTTagCompound) userList.tagAt(i)).getString("name"));
+            this.getNodes().add(((NBTTagCompound) userList.tagAt(i)).getString("name"));
         }
     }
 
@@ -115,6 +115,22 @@ public class AccessUser extends User implements ISaveObj
             this.extraData = new NBTTagCompound();
         }
         return this.extraData;
+    }
+
+    public List<String> getNodes()
+    {
+        return nodes;
+    }
+
+    public void setNodes(List<String> nodes)
+    {
+        this.nodes = nodes;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "User: " + this.username + " Group: " + (this.getGroup() != null ? this.getGroup().getName() : " null");
     }
 
 }
