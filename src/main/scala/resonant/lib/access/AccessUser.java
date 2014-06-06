@@ -41,29 +41,15 @@ public class AccessUser extends User implements ISaveObj
 
     public boolean hasNode(String node)
     {
-        if (node != null && !node.isEmpty())
+        String tempNode = node.replaceAll(".*", "");
+        for (String headNode : nodes)
         {
-            //Remove the wild card from the end
-            String newNode = node;
-            newNode = newNode.replaceAll(".*", "");
-
-            //Loop threw all super nodes to see if the user has a super node of the sub node
-            String[] sub_nodes = newNode.split(".");
-            if (sub_nodes != null && sub_nodes.length > 0)
+            if (tempNode.contains(headNode))
             {
-                newNode = "";
-                //Build a new node start from the most super node moving to the lowest sub node
-                for (int i = 0; i < sub_nodes.length; i++)
-                {
-                    newNode += (i != 0 ? "." : "") + sub_nodes[i];
-                    if (getNodes().contains(newNode + ".*") || group != null && group.hasNode(newNode + ".*") || getNodes().contains(newNode) || group != null && group.hasNode(newNode))
-                    {
-                        return true;
-                    }
-                }
+                return true;
             }
         }
-        return false;
+        return this.nodes.contains(node) || this.group != null && this.group.hasNode(node);
     }
 
     @Override
