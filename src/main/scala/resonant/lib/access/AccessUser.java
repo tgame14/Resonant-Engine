@@ -16,7 +16,7 @@ public class AccessUser extends User implements ISaveObj
     protected boolean isTempary = false;
     protected NBTTagCompound extraData;
     protected AccessGroup group;
-    protected List<String> nodes = new ArrayList<String>();
+    private List<String> nodes = new ArrayList<String>();
 
     public AccessUser(String username)
     {
@@ -41,29 +41,15 @@ public class AccessUser extends User implements ISaveObj
 
     public boolean hasNode(String node)
     {
-        if (node != null && !node.isEmpty())
+        String tempNode = node.replaceAll(".*", "");
+        for (String headNode : nodes)
         {
-            //Remove the wild card from the end
-            String newNode = node;
-            newNode = newNode.replaceAll(".*", "");
-
-            //Loop threw all super nodes to see if the user has a super node of the sub node
-            String[] sub_nodes = newNode.split(".");
-            if (sub_nodes != null && sub_nodes.length > 0)
+            if (tempNode.contains(headNode))
             {
-                newNode = "";
-                //Build a new node start from the most super node moving to the lowest sub node
-                for (int i = 0; i < sub_nodes.length; i++)
-                {
-                    newNode += (i != 0 ? "." : "") + sub_nodes[i];
-                    if (nodes.contains(newNode + ".*") || group != null && group.hasNode(newNode + ".*") || nodes.contains(newNode) || group != null && group.hasNode(newNode))
-                    {
-                        return true;
-                    }
-                }
+                return true;
             }
         }
-        return false;
+        return this.nodes.contains(node) || this.group != null && this.group.hasNode(node);
     }
 
     @Override
@@ -72,7 +58,7 @@ public class AccessUser extends User implements ISaveObj
         nbt.setString("username", this.username);
         nbt.setCompoundTag("extraData", this.userData());
         NBTTagList usersTag = new NBTTagList();
-        for (String str : this.nodes)
+        for (String str : this.getNodes())
         {
             NBTTagCompound accessData = new NBTTagCompound();
             accessData.setString("name", str);
@@ -87,10 +73,10 @@ public class AccessUser extends User implements ISaveObj
         this.username = nbt.getString("username");
         this.extraData = nbt.getCompoundTag("extraData");
         NBTTagList userList = nbt.getTagList("nodes");
-        this.nodes.clear();
+        this.getNodes().clear();
         for (int i = 0; i < userList.tagCount(); ++i)
         {
-            this.nodes.add(((NBTTagCompound) userList.tagAt(i)).getString("name"));
+            this.getNodes().add(((NBTTagCompound) userList.tagAt(i)).getString("name"));
         }
     }
 
@@ -115,6 +101,22 @@ public class AccessUser extends User implements ISaveObj
             this.extraData = new NBTTagCompound();
         }
         return this.extraData;
+    }
+
+    public List<String> getNodes()
+    {
+        return nodes;
+    }
+
+    public void setNodes(List<String> nodes)
+    {
+        this.nodes = nodes;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "User: " + this.username + " Group: " + (this.getGroup() != null ? this.getGroup().getName() : " null");
     }
 
 }

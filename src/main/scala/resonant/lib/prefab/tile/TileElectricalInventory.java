@@ -1,5 +1,6 @@
 package resonant.lib.prefab.tile;
 
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ISidedInventory;
@@ -17,7 +18,17 @@ public class TileElectricalInventory extends TileElectrical implements IExternal
 {
     protected IExternalInventoryBox inventory;
     protected int maxSlots = 1;
+    
+    public TileElectricalInventory()
+    {
+        super(null);
+    }
 
+    public TileElectricalInventory(Material material)
+    {
+        super(material);
+    }
+    
     @Override
     public IExternalInventoryBox getInventory()
     {

@@ -113,13 +113,17 @@ public class PacketAnnotation extends PacketType
 
     public void sync(Object obj, int packetSetID)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+        Packet packet = getPacket(obj, packetSetID);
+        if(packet != null)
         {
-            PacketDispatcher.sendPacketToAllPlayers(getPacket(obj, packetSetID));
-        }
-        else
-        {
-            PacketDispatcher.sendPacketToServer(getPacket(obj, packetSetID));
+            if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+            {
+                PacketDispatcher.sendPacketToAllPlayers(packet);
+            }
+            else
+            {
+                PacketDispatcher.sendPacketToServer(packet);
+            }
         }
     }
 

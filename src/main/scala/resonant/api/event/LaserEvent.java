@@ -210,6 +210,7 @@ public class LaserEvent extends Event
             int id = vec.getBlockID(world);
             int meta = vec.getBlockID(world);
             Block block = Block.blocksList[id];
+            TileEntity tile = vec.getTileEntity(world);
 
             Vector3 start = null;
             if (player instanceof Entity)
@@ -220,6 +221,20 @@ public class LaserEvent extends Event
             {
                 start = new Vector3((TileEntity) player);
             }
+            
+            //Tile black list
+            if(tile != null)
+            {
+                Class<?> clazz = tile.getClass();
+                System.out.println("Clazz: " + clazz);
+                if(clazz.getName().contains("TileMultipart"))
+                {
+                    if(player instanceof EntityPlayer)
+                        ((EntityPlayer)player).addChatMessage("Laser: Breaking of multiparts is disabled for the moment");
+                    return;
+                }
+            }
+            
             List<ItemStack> items = null;
             // TODO make this use or call to the correct methods, and events so it can be canceled
             if (block != null && block.getBlockHardness(world, vec.intX(), vec.intY(), vec.intZ()) >= 0 && doLaserHarvestCheck(world, start, player, vec))
@@ -289,34 +304,34 @@ public class LaserEvent extends Event
                 {
                     e.printStackTrace();
                 }
-            }
-            if (player instanceof EntityPlayer)
-            {
-                if (block != null)
+                if (player instanceof EntityPlayer)
                 {
-                    block.onBlockHarvested(world, vec.intX(), vec.intY(), vec.intZ(), meta, (EntityPlayer) player);
-
-                    boolean flag = block.removeBlockByPlayer(world, (EntityPlayer) player, vec.intX(), vec.intY(), vec.intZ());
-
-                    if (flag)
+                    if (block != null)
                     {
-                        block.onBlockDestroyedByPlayer(world, vec.intX(), vec.intY(), vec.intZ(), meta);
+                        block.onBlockHarvested(world, vec.intX(), vec.intY(), vec.intZ(), meta, (EntityPlayer) player);
+
+                        boolean flag = block.removeBlockByPlayer(world, (EntityPlayer) player, vec.intX(), vec.intY(), vec.intZ());
+
+                        if (flag)
+                        {
+                            block.onBlockDestroyedByPlayer(world, vec.intX(), vec.intY(), vec.intZ(), meta);
+                        }
                     }
                 }
-            }
-            else
-            {
-                world.destroyBlock(vec.intX(), vec.intY(), vec.intZ(), false);
-                world.destroyBlockInWorldPartially(player instanceof Entity ? ((Entity) player).entityId : 0, vec.intX(), vec.intY(), vec.intZ(), -1);
-            }
-
-            //Do drops last preventing any issues when the block doesn't break            
-            Block b = Block.blocksList[world.getBlockId(vec.intX(), vec.intY(), vec.intZ())];
-            if ((b == null || b.isAirBlock(world, vec.intX(), vec.intY(), vec.intZ())) && items != null)
-            {
-                for (ItemStack stack : items)
+                else
                 {
-                    InventoryUtility.dropItemStack(world, vec.translate(0.5), stack);
+                    world.destroyBlock(vec.intX(), vec.intY(), vec.intZ(), false);
+                    world.destroyBlockInWorldPartially(player instanceof Entity ? ((Entity) player).entityId : 0, vec.intX(), vec.intY(), vec.intZ(), -1);
+                }
+
+                //Do drops last preventing any issues when the block doesn't break            
+                Block b = Block.blocksList[world.getBlockId(vec.intX(), vec.intY(), vec.intZ())];
+                if ((b == null || b.isAirBlock(world, vec.intX(), vec.intY(), vec.intZ())) && items != null)
+                {
+                    for (ItemStack stack : items)
+                    {
+                        InventoryUtility.dropItemStack(world, vec.translate(0.5), stack);
+                    }
                 }
             }
         }

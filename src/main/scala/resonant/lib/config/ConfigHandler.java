@@ -1,6 +1,7 @@
 package resonant.lib.config;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 import net.minecraftforge.common.Configuration;
 
@@ -17,8 +18,8 @@ import net.minecraftforge.common.Configuration;
  * ConfigHandler.configure(Configuration configObject, String namespace);
  * 
  * now do remember, The namespace is your mods namespace. for the ICBM mod it would be "icbm", for
- * Resonant Engine, it would be "calclavia" yet if you want to split config files, you can do that by
- * separating namespaces: for example, ICBM Sentries separate Config file, and ICBM Explosives
+ * Resonant Engine, it would be "calclavia" yet if you want to split config files, you can do that
+ * by separating namespaces: for example, ICBM Sentries separate Config file, and ICBM Explosives
  * separate config file
  * 
  * ConfigHandler.configure(icbmSentryConfigObject, "icbm.sentry");
@@ -74,8 +75,19 @@ public final class ConfigHandler
     {
         try
         {
+            boolean isPrivate = Modifier.isPrivate(field.getModifiers());
+            boolean isProtected = Modifier.isProtected(field.getModifiers());
+            boolean isFinal = Modifier.isFinal(field.getModifiers());
             // Set field and annotation data Handled before handing the write of field to config
-            field.setAccessible(true);
+            if (isFinal)
+            {
+                //TODO support setting finals by removing the final then re-adding it after editing
+                System.out.println("Failed to configure final field: " + field.getName());
+                return;
+            }
+            if (isPrivate || isProtected)
+                field.setAccessible(true);
+            
             String key;
 
             if (cfg.key().isEmpty())
@@ -145,6 +157,10 @@ public final class ConfigHandler
                     field.set(null, values);
                 }
                 // TODO Add support for reading Long[] lists from config
+            }
+            if (isPrivate)
+            {
+                //TODO reset access
             }
         }
         catch (Exception e)

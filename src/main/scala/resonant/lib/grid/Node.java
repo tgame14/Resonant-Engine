@@ -5,10 +5,12 @@ import java.util.WeakHashMap;
 
 import resonant.api.grid.INode;
 import resonant.api.grid.INodeProvider;
+import resonant.lib.utility.nbt.ISaveObj;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
 
-public abstract class Node<P extends INodeProvider, G extends Grid, N> implements INode
+@SuppressWarnings("rawtypes")
+public abstract class Node<P extends INodeProvider, G extends Grid, N> implements INode, ISaveObj
 {
     public final P parent;
 
@@ -76,9 +78,14 @@ public abstract class Node<P extends INodeProvider, G extends Grid, N> implement
     @Override
     public final void recache()
     {
-        synchronized (connections)
+        try
         {
             doRecache();
+        }
+        catch (Exception e)
+        {
+            System.out.println("Node: " + this + " failed to rebuild its connection list and/or cache of values");
+            e.printStackTrace();
         }
     }
 

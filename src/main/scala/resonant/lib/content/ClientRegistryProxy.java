@@ -3,19 +3,50 @@ package resonant.lib.content;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
 import resonant.lib.References;
 import resonant.lib.content.module.RenderTileDummy;
 import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
+/** @author Calclavia, Darkguardsman */
 public class ClientRegistryProxy extends CommonRegistryProxy
 {
     @Override
-    public void registerBlock(Block block, Class<? extends ItemBlock> itemClass, String name, String modID)
+    public void registerItem(ContentRegistry registry, Item item, String name, String modID)
     {
-        super.registerBlock(block, itemClass, name, modID);
+        super.registerItem(registry, item, name, modID);
+        
+        //Set creative tab
+        if (registry.getDefaultTab() != null && item.getCreativeTab() == null)
+            item.setCreativeTab(registry.getDefaultTab());
 
+        //Set texture name
+        if (registry.modPrefix != null)
+        {
+            if (ReflectionHelper.getPrivateValue(Item.class, item, "iconString", "field_111218_cA") == null)
+                item.setTextureName(registry.modPrefix + name);
+        }
+    }
+
+    @Override
+    public void registerBlock(ContentRegistry registry, Block block, Class<? extends ItemBlock> itemClass, String name, String modID)
+    {
+        super.registerBlock(registry, block, itemClass, name, modID);
+        //Set creative tab
+        if (registry.getDefaultTab() != null && block.getCreativeTabToDisplayOn() == null)
+            block.setCreativeTab(registry.getDefaultTab());
+
+        //set Texture name
+        if (registry.modPrefix != null)
+        {
+            if (ReflectionHelper.getPrivateValue(Block.class, block, "textureName", "field_111026_f") == null)
+                block.setTextureName(registry.modPrefix + name);
+        }
+
+        //Load in tiles
         BlockInfo blockInfo = block.getClass().getAnnotation(BlockInfo.class);
 
         if (blockInfo != null)
