@@ -296,7 +296,7 @@ public class LaserEvent extends Event
                         }
                     }
                     items.removeAll(removeList);
-                    LaserEvent.LaserDropItemEvent event = new LaserEvent.LaserDropItemEvent(world, start, vec, items);
+                    LaserDropItemEvent event = new LaserDropItemEvent(world, start, vec, items);
                     MinecraftForge.EVENT_BUS.post(event);
                     items = event.items;
                 }
