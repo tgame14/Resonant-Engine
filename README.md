@@ -8,6 +8,10 @@ Mod framework and source dev kit used mainly by Calclavia's mods.
 * Darkguardsman(aka DarkCow)
 * Alex_hawks
 
+Support
+======
+* Make sure you used the latest Versions even try dev versions. 
+* use Pastebin to make it easier and so we don't have to scroll down a giant wall of text.
 
 ### License
 License
