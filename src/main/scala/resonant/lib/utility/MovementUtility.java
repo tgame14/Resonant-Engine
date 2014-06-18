@@ -1,13 +1,13 @@
 package resonant.lib.utility;
 
-import java.lang.reflect.Method;
-
+import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import universalelectricity.api.vector.Vector3;
-import cpw.mods.fml.relauncher.ReflectionHelper;
+
+import java.lang.reflect.Method;
 
 /** Helper class for the Force Manipulator
  * 
@@ -41,8 +41,15 @@ public class MovementUtility
             }
     
             int heightMapValue = chunk.heightMap[heightMapIndex];
-    
-            world.removeBlockTileEntity(position.intX(), position.intY(), position.intZ());
+
+			if (position.isInBounds())
+			{
+				world.removeBlockTileEntity(position.intX(), position.intY(), position.intZ());
+			}
+			else
+			{
+				return;
+			}
     
             ExtendedBlockStorage extendedBlockStorage = chunk.getBlockStorageArray()[position.intY() >> 4];
     
