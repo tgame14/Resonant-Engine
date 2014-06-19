@@ -41,15 +41,8 @@ public class MovementUtility
             }
     
             int heightMapValue = chunk.heightMap[heightMapIndex];
-
-			if (position.isInBounds())
-			{
-				world.removeBlockTileEntity(position.intX(), position.intY(), position.intZ());
-			}
-			else
-			{
-				return;
-			}
+            
+			world.removeBlockTileEntity(position.intX(), position.intY(), position.intZ());
     
             ExtendedBlockStorage extendedBlockStorage = chunk.getBlockStorageArray()[position.intY() >> 4];
     
